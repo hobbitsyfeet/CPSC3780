@@ -3,7 +3,7 @@
 #include <iostream>
 #include <string>
 
-int main(int argc, int argv[])
+int main()
 {
    try{
       // Replace "localhost" with the hostname

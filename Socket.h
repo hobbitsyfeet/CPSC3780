@@ -3,6 +3,10 @@
 #ifndef Socket_class
 #define Socket_class
 
+#ifndef MSG_NOSIGNAL
+#define MSG_NOSIGNAL 0x4000   /* Do not generate SIGPIPE */
+#endif
+
 #include <string>
 #include <iostream>
 #include <sys/types.h>
