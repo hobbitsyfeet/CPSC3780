@@ -21,6 +21,7 @@ int main(int argc, int argv[])
 	    while (true){
 	       std::string data;
 	       new_sock >> data;
+	       data=data+" fuck you!";
 	       new_sock << data;
 	    }
 	 }

@@ -12,14 +12,17 @@ int main(int argc, int argv[])
       std::string reply;
       // Usually in real applications, the following
       // will be put into a loop.
-      try {
-	 client_socket << "Test message.";
-	 client_socket >> reply;
+      for(int i=0;i<5;i++){
+         try {
+	     client_socket << "Test message.";
+	     client_socket >> reply;
+         }
+         catch(SocketException&){
+         }
+         std::cout << "We received this response from the server:\n\"" << reply << "\"\n";;
       }
-      catch(SocketException&){
-      }
-      std::cout << "We received this response from the server:\n\"" << reply << "\"\n";;
-   }
+}
+
    catch(SocketException& e){
       std::cout << "Exception was caught:" << e.description() << "\n";
    }
