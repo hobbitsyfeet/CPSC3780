@@ -2,10 +2,10 @@
 
 #ifndef Socket_class
 #define Socket_class
-
+/*
 #ifndef MSG_NOSIGNAL
 #define MSG_NOSIGNAL 0x4000   /* Do not generate SIGPIPE */
-#endif
+//#endif
 
 #include <string>
 #include <iostream>
