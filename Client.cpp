@@ -9,7 +9,14 @@
 using namespace std;
 typedef bitset<529> block;//512 for data, 1 for parity, 16 for seq #
 
+struct frame{
+   char message[64];
+   bitset<1> parity;
+   unsigned int seq;
+};
+
 vector<block>* framer();
+vector<frame>* framer2();
 
 int main()
 {
@@ -104,4 +111,42 @@ vector<block>* framer()
       }
    }
    return &frames;
+}
+
+vector<frame>* framer2()
+{
+   int i,j,k,pcounter,scount=0;
+   bitset<8> btemp;
+   vector<frame> temp;
+   frame ftemp;
+   ifstream file("testtext.txt");
+   string input;
+   while(!file.eof())
+   {
+      getline(file,input);
+      while(input.size()%64!=0)
+      {
+         input.append(" ");
+      }
+      for(i=0;i<input.size();i+=64)
+      {
+         pcounter=0;
+         for(j=0;j<64;j++)
+         {
+            ftemp.message[j]=input[i+j];
+            btemp=bitset<8>(ftemp.message[j]);
+            for(k=0;k<8;k++)
+            {
+               if(btemp[j]==1){pcounter++;}
+            }
+         }
+         if(pcounter%2==1){ftemp.parity[0]=1;}
+         else{ftemp.parity[0]=0;}
+         ftemp.seq=scount;
+         scount++;
+         temp.push_back(ftemp);
+      }
+   }
+   cout<<temp.size()<<"\n\n";
+   return &temp;
 }
