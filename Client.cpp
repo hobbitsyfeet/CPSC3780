@@ -9,10 +9,14 @@
 using namespace std;
 typedef bitset<529> block;//512 for data, 1 for parity, 16 for seq #
 
+//TODO class Frame>> extraction fromthis block
 struct frame{
+   const static int size = 64;
    char message[64];
-   bitset<1> parity;
+   bitset<1> parity; //needs to be even parity
    unsigned int seq;
+
+   //
 };
 
 vector<block>* framer();
@@ -23,17 +27,37 @@ int main()
    try{
       // Replace "localhost" with the hostname
       // that you're running your server.
-      ClientSocket client_socket("localhost", 30000);
+      ClientSocket client_data_socket("localhost", 30000);
+      ClientSocket client_ack_socket("localhost",29999);
+
       string reply;
+      string reply_ack;
+
+      bool parity = true;
       // Usually in real applications, the following
       // will be put into a loop.
-      for(int i=0;i<5;i++){
+      for(int i=0;i<10;i++){
          try {
-	     client_socket << "Test message.";
-	     client_socket >> reply;
-         }
+
+	          //client_data_socket << "Test message.";
+	      //client_data_socket >> reply;
+
+          client_data_socket >> reply;
+
+          //check parity here
+          //TODO
+          if (reply != "xxxxx"){
+            cout<<"Sending ACK";
+            client_ack_socket <<"True";
+          }
+          else {
+            cout<<"Sending NAK";
+            client_ack_socket <<"False";
+          }
+        }
          catch(SocketException&){
          }
+
          cout << "We received this response from the server:\n\"" << reply << "\"\n";;
       }
 }
