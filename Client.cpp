@@ -35,7 +35,7 @@ int main()
 
       // Usually in real applications, the following
       // will be put into a loop.
-      for(int i=0;i<10;i++){
+      for(int i=0;i<11;i++){
          try {
           client_data_socket >> reply;
           //get last char for parity check
@@ -58,7 +58,7 @@ int main()
           // bit representation of the sum
           std::bitset<32> sumOfInBits(sumOf);
           int countOneValueBit = 0;
-          for(int x =0; x < sumOfInBits.size() -1; x++){
+          for(int x =0; x < sumOfInBits.size(); x++){
               if(sumOfInBits[x] == 1){
                 countOneValueBit++;
               }

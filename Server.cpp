@@ -39,6 +39,7 @@ int main()
           if(ack == "ACK"){
             current_index++;
             //TODO str = frame_data[current_index]
+            str += 'x';
 
             int sumOf = 0;
             //create sum of 64ish characters
@@ -48,7 +49,7 @@ int main()
             //bit represent to count 1's for even parity
             std::bitset<32> sumOfInBits(sumOf);
             countForEvenParityBit = 0;
-            for(int x =0; x < sumOfInBits.size() -1; x++){
+            for(int x =0; x < sumOfInBits.size(); x++){
                 if(sumOfInBits[x] == 1){
                   countForEvenParityBit++;
                 }
@@ -58,7 +59,7 @@ int main()
           // for creating the error every 5 but not repeating the error if
           // one was already sent
           int conditionParity = 0;
-          if(current_index == 4 && !createdError){
+          if(current_index%5 == 0 && !createdError){
             if(conditionParity == 0){
               conditionParity = 1;
             }else{
