@@ -33,32 +33,59 @@ int main()
       string reply;
       string reply_ack;
 
-      bool parity = true;
       // Usually in real applications, the following
       // will be put into a loop.
       for(int i=0;i<10;i++){
          try {
-
-	          //client_data_socket << "Test message.";
-	      //client_data_socket >> reply;
-
           client_data_socket >> reply;
+          //get last char for parity check
+          char lastbyte = reply[reply.length() -1];
 
+          cout << lastbyte;
+          cout << '\n';
+          //remove last char from message
+          string str = reply.substr(0, reply.length()-1);
+          int sumOf = 0;
+          //sumof the chars of the message
+          for(int x = 0; x < str.length(); x++) {
+              sumOf += str[x];
+              std::bitset<32> temp(str[x]);
+              cout << str[x];
+              cout << " to bitset is ";
+              cout << temp;
+              cout << "\n";
+          }
+          // bit representation of the sum
+          std::bitset<32> sumOfInBits(sumOf);
+          int countOneValueBit = 0;
+          for(int x =0; x < sumOfInBits.size() -1; x++){
+              if(sumOfInBits[x] == 1){
+                countOneValueBit++;
+              }
+          }
+          //check if the calculated parity is the same as that sent
+          bool correctParity = countOneValueBit%2 == 0 && lastbyte == '0' || countOneValueBit%2 == 1 && lastbyte == '1';
           //check parity here
-          //TODO
-          if (reply != "xxxxx"){
-            cout<<"Sending ACK";
-            client_ack_socket <<"True";
+          cout << "We received this response from the server:\n\"" << reply << "\"\n";
+          cout << "SumOf ";
+          cout << sumOf;
+          cout << " to bitset is ";
+          cout << sumOfInBits;
+          cout << "\n";
+
+          if (correctParity){
+            cout<<"Sending ACK\n";
+            client_ack_socket << "ACK";
           }
           else {
-            cout<<"Sending NAK";
-            client_ack_socket <<"False";
+            cout<<"Sending NAK\n";
+            client_ack_socket <<"NAK";
           }
         }
          catch(SocketException&){
          }
 
-         cout << "We received this response from the server:\n\"" << reply << "\"\n";;
+
       }
 }
 
