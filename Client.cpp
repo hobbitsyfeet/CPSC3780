@@ -22,6 +22,7 @@ struct frame{
 vector<block>* framer();
 vector<frame>* framer2();
 
+
 int main()
 {
    try{
@@ -50,10 +51,13 @@ int main()
           for(int x = 0; x < str.length(); x++) {
               sumOf += str[x];
               std::bitset<32> temp(str[x]);
-              cout << str[x];
+
+              //prints out each character and it's binary value
+              /*cout << str[x];
               cout << " to bitset is ";
               cout << temp;
               cout << "\n";
+              */
           }
           // bit representation of the sum
           std::bitset<32> sumOfInBits(sumOf);
