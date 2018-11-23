@@ -2,10 +2,28 @@
 #include "SocketException.h"
 #include <bitset>
 #include <string>
+#include <fstream>
+#include <string>
+#include <vector>
+using namespace std;
+
+string readFile();
+vector<string> createFrames(string&);
+
+
 
 int main()
 {
-   std::cout << "running....\n";
+  //reads text from file into LONG string.
+  string data_string = readFile();
+  //cout<<"Loading:\n"<< data_string;
+  vector<string> frames = createFrames(data_string);
+
+  for(int i; i < frames.size(); i++){
+    cout<<"Frame "<< i << ": "<< frames[i]<<endl;
+  }
+
+   cout << "running....\n";
    try{
       // Create the socket
       ServerSocket server_data(30000);
@@ -24,7 +42,7 @@ int main()
 	 // with the client.
 	 try{
       //data to send with parity bit
-     	std::string data;
+     	string data;
       //current_index is the index of the frame to send
       int current_index = -1;
       //stop errors if there has already received a NAK
@@ -32,9 +50,9 @@ int main()
       //parity bit for the current frame
       int countForEvenParityBit = 0;
       //data string
-      std::string str = "Hello";
+      string str = "Hello";
       //The ack from the cilent
-      std::string ack = "ACK";
+      string ack = "ACK";
 	    while (true){
           if(ack == "ACK"){
             current_index++;
@@ -47,7 +65,7 @@ int main()
                 sumOf += str[x];
             }
             //bit represent to count 1's for even parity
-            std::bitset<32> sumOfInBits(sumOf);
+            bitset<32> sumOfInBits(sumOf);
             countForEvenParityBit = 0;
             for(int x =0; x < sumOfInBits.size(); x++){
                 if(sumOfInBits[x] == 1){
@@ -89,7 +107,51 @@ int main()
       }
    }
    catch (SocketException& e){
-      std::cout << "Exception was caught:" << e.description() << "\nExiting.\n";
+      cout << "Exception was caught:" << e.description() << "\nExiting.\n";
    }
   return 0;
+}
+
+//reads all contents in file to a LONG string
+string readFile(){
+  string word = "";
+  ifstream fin;
+  string tempString = "";
+  fin.open("testtext.txt");
+  if (!fin) {
+    cout << "Unable to open file";
+    return "";
+  }
+  while(fin >> word){
+    tempString = tempString +" "+ word;
+  }
+  return tempString;
+}
+
+//creates a vector of strings which contain up to 64 chars each
+vector<string> createFrames(string& fileString){
+  vector<string> frames;
+  //Each step is multiplied to the string size to get the next frame EX.frameStart = step * 64
+  for(int step = 0; step < fileString.length()/64 +1; step++){
+
+    if(step * 64 > fileString.length()){
+      int frameStart = step * 64;
+      string substring = fileString.substr(frameStart, fileString.length() - frameStart);
+      if(substring.length() == 0){
+        break;
+      }
+      frames.push_back(substring);
+    }
+    //else we are in bounds with the next step, add 64 chars to the frame vector
+    else{
+      int frameStart = step * 64;
+      string substring = fileString.substr(frameStart, 64);
+      if(substring.length() == 0){
+        break;
+      }
+      frames.push_back(substring);
+    }
+  }
+  return frames;
+    //if step is larger than the string length, we're at the end so take the rest
 }
