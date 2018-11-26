@@ -9,6 +9,7 @@
 using namespace std;
 
 string readFile();
+vector<string> framer();
 vector<string> createFrames(string&);
 
 //TODO function that sends the data from the frame_pointer
@@ -282,4 +283,41 @@ void *sendData(void* frame_pointer){
      cout << "Exception was caught:" << e.description() << "\nExiting.\n";
    }*/
 
+}
+
+
+vector<string> framer()
+{
+   int i,j,pcounter=0;
+   vector<string> temp;
+   string ftemp;
+   ifstream file("testtext.txt");
+   string input;
+   while(!file.eof())
+   {
+      getline(file,input);
+      while(input.size()%64!=0)
+      {
+         input.append(" ");
+      }
+      for(i=0;i<input.size();i+=64)
+      {
+         pcounter=0;
+         for(j=0;j<64;j++)
+         {
+            ftemp.push_back(input[i+j]);
+            pcounter+=input[i+j];
+         }
+         if(pcounter%2==1){ftemp.push_back('1');}
+         else{ftemp.push_back('0');}
+         temp.push_back(ftemp);
+         ftemp.erase(0,ftemp.size());
+      }
+   }
+   for(i=0;i<1000;i++)
+   {
+      temp.push_back(temp[i%18]);
+   }
+   cout<<temp.size()<<"\n\n";
+   return temp;
 }
