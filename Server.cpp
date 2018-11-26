@@ -8,19 +8,14 @@
 #include <pthread.h>
 using namespace std;
 
-string readFile();
 vector<string> framer();
-vector<string> createFrames(string&);
 
 //TODO function that sends the data from the frame_pointer
 void *sendData(void* frame_pointer);
 
 int main()
 {
-  //reads text from file into LONG string.
-  string data_string = readFile();
-  //cout<<"Loading:\n"<< data_string;
-  vector<string> frames = createFrames(data_string);
+  vector<string> frames = framer();
 
   vector<string>* frames_ptr = &frames;
   //display information loaded
@@ -140,51 +135,6 @@ int main()
     }
 
   return 0;
-}
-
-//reads all contents in file to a LONG string
-string readFile(){
-  string word = "";
-  ifstream fin;
-  string tempString = "";
-  fin.open("testtext.txt");
-  if (!fin) {
-    cout << "Unable to open file";
-    return "";
-  }
-  while(fin >> word){
-    tempString = tempString +" "+ word;
-  }
-  return tempString;
-}
-
-//creates a vector of strings which contain up to 64 chars each
-//TODO need to make sure we catch \n chars to create a new frame
-vector<string> createFrames(string& fileString){
-  vector<string> frames;
-  //Each step is multiplied to the string size to get the next frame EX.frameStart = step * 64
-  for(int step = 0; step < fileString.length()/64 +1; step++){
-
-    if(step * 64 > fileString.length()){
-      int frameStart = step * 64;
-      string substring = fileString.substr(frameStart, fileString.length() - frameStart);
-      if(substring.length() == 0){
-        break;
-      }
-      frames.push_back(substring);
-    }
-    //else we are in bounds with the next step, add 64 chars to the frame vector
-    else{
-      int frameStart = step * 64;
-      string substring = fileString.substr(frameStart, 64);
-      if(substring.length() == 0){
-        break;
-      }
-      frames.push_back(substring);
-    }
-  }
-  return frames;
-    //if step is larger than the string length, we're at the end so take the rest
 }
 
 //TODO find a way to pass pointers to sockets as well as frameData
