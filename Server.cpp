@@ -12,6 +12,7 @@ struct Arguments{
   vector<string>* frames_ptr;
   ServerSocket* data_socket_ptr;
   ServerSocket* ack_socket_ptr;
+
 };
 
 vector<string> framer();
@@ -37,6 +38,14 @@ int main()
   int NTHREADS = 5;
   pthread_t thread_id[NTHREADS];
 
+  //TODO both for thread loops should exist in the loop which access each frame
+  // for(frame in frames)
+    //create threads
+    //join threads
+    //print threads
+  //NEXT FRAME
+
+
    cout << "running....\n";
 
    try{
@@ -51,6 +60,7 @@ int main()
          arg.data_socket_ptr = &data_socket;
          arg.ack_socket_ptr = &ack_socket;
 
+
          //create the threads
           for(int thread = 0; thread < NTHREADS; thread++){
             //for each thread, server must accept a socket
@@ -61,7 +71,6 @@ int main()
           }
            //join each thread
            for(int thread  = 0; thread < NTHREADS; thread ++){
-             //TODO last argument (NULL) needs to be a pointer to vector of frames
              pthread_join( thread_id[thread],NULL);
            }
 
@@ -82,7 +91,7 @@ void *sendData(void* arg_ptr){
   //arg is dereferenced converted pointer (same as arg in main)
   Arguments arg = *arg_convert;
 
-  //dereference to concrete versions of each argument
+  //dereference to concrete versions of each a
   vector<string> frames = *arg.frames_ptr;
   ServerSocket data_socket = *arg.data_socket_ptr;
   ServerSocket ack_socket = *arg.ack_socket_ptr;
@@ -137,10 +146,6 @@ vector<string> framer()
          temp.push_back(ftemp);
          ftemp.erase(0,ftemp.size());
       }
-   }
-   for(i=0;i<1000;i++)
-   {
-      temp.push_back(temp[i%18]);
    }
    cout<<temp.size()<<"\n\n";
    return temp;

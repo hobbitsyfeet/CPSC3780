@@ -21,15 +21,15 @@ int main()
       string reply;
       string reply_ack;
 
-      
+
       // Usually in real applications, the following
       // will be put into a loop.
-      for(int i=0;i<11;i++){
+      for(int i=0;i<1017;i++){
          try {
           client_data_socket >> reply;
           cout<<reply<<endl;
           //get last char for parity check
-          
+
           //sumof the chars of the message
           /*for(int x = 0; x < str.length(); x++) {
               sumOf += str[x];
@@ -40,7 +40,7 @@ int main()
               cout << " to bitset is ";
               cout << temp;
               cout << "\n";
-              
+
           }*/
           /*
           // bit representation of the sum
