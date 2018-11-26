@@ -8,7 +8,7 @@ Client = ClientSocket.o Socket.o Client.o ServerSocket.h Socket.h SocketExceptio
 all : Server Client
 
 Server: $(Server)
-	g++ -o Server $(Server)
+	g++ -o Server -lpthread $(Server)
 
 
 Client: $(Client)
