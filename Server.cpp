@@ -57,7 +57,7 @@ int main()
           if(ack == "ACK"){
             current_index++;
             //TODO str = frame_data[current_index]
-            str += 'x';
+            str = frames[current_index];
 
             int sumOf = 0;
             //create sum of 64ish characters
