@@ -10,6 +10,7 @@ using namespace std;
 
 vector<string> framer();
 
+
 //TODO function that sends the data from the frame_pointer
 void *sendData(void* frame_pointer);
 
@@ -98,6 +99,7 @@ int main()
             }
           }
           data = str;
+          /*
           // for creating the error every 5 but not repeating the error if
           // one was already sent
           int conditionParity = 0;
@@ -110,16 +112,7 @@ int main()
             createdError = true;
           }else{
             createdError = false;
-          }
-          //adding the parity bit
-          if(countForEvenParityBit%2 == conditionParity){
-            //check bit of zero creates a NULL char this is why it is a string for now
-            char addChar = '0';
-            data += addChar;
-          } else {
-            char addChar = '1';
-            data += addChar;
-          }
+          }   */     
           // send data
 	       data_sock << data;
          // get ack
