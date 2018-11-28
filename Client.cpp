@@ -11,6 +11,7 @@ bool checkParity(string);
 
 int main()
 {
+  string content = "";
    bool correctParity;
    try{
       // Replace "localhost" with the hostname
@@ -25,8 +26,9 @@ int main()
       // Usually in real applications, the following
       // will be put into a loop.
       //TODO while NOT EOF
-      for(int i=0;i<10;i++){
+      for(int i=0;i<1000000;i++){
          try {
+
            if(i == 0){
           client_data_socket >> reply;
           cout<<reply<<endl;
@@ -40,39 +42,21 @@ int main()
             client_data_socket >> reply;
             cout<<reply<<endl;
           }
-          //get last char for parity check
-
-          //sumof the chars of the message
-          /*for(int x = 0; x < str.length(); x++) {
-              sumOf += str[x];
-              std::bitset<32> temp(str[x]);
-
-              //prints out each character and it's binary value
-              cout << str[x];
-              cout << " to bitset is ";
-              cout << temp;
-              cout << "\n";
-
-          }*/
-          /*
-          // bit representation of the sum
-          std::bitset<32> sumOfInBits(sumOf);
-          int countOneValueBit = 0;
-          for(int x =0; x < sumOfInBits.size(); x++){
-              if(sumOfInBits[x] == 1){
-                countOneValueBit++;
-              }
-          }*/
+          if(reply == "__EOF__")
+          {break;}
           //check if the calculated parity is the same as that sent
           correctParity=checkParity(reply);
           //check parity here
           //cout << "We received this response from the server:\n\"" << reply << "\"\n";
-          cout <<correctParity;
-          cout << "\n";
+          //cout <<"="<<correctParity;
+          //cout << "\n";
 
           if (correctParity){
-            cout<<"Sending ACK\n";
+            //cout<<"Sending ACK\n";
             client_ack_socket << "ACK";
+            if(content.length() < 64)
+              content = content + reply;
+            else{content = content + reply + '\n';}
           }
           else {
             cout<<"Sending NAK\n";
@@ -89,6 +73,7 @@ int main()
    catch(SocketException& e){
       cout << "Exception was caught:" << e.description() << "\n";
    }
+   cout<<content;
    return 0;
 }
 
