@@ -15,7 +15,7 @@ struct Arguments{
 
 };
 
-vector<string> framer();
+vector<string> framer(string fileName);
 
 
 //TODO function that sends the data from the frame_pointer
@@ -26,52 +26,61 @@ int main()
   Arguments arg;
   Arguments* arg_ptr = &arg;
 
-  vector<string> frames = framer();
-  arg.frames_ptr = &frames;
+  vector<vector<string> > fileList;
+  fileList.push_back(framer("testtext.txt"));
+  fileList.push_back(framer("LifeOfDogs.txt"));
+
+
 
   //display information loaded
-  for(int i; i < frames.size(); i++){
+  /*for(int i; i < frames.size(); i++){
     cout<<"Frame "<< i << ": "<< frames[i]<<endl;
-  }
+  }*/
 
   //can handle up to 5 threads
   int NTHREADS = 5;
   pthread_t thread_id[NTHREADS];
-
-  //TODO both for thread loops should exist in the loop which access each frame
-  // for(frame in frames)
-    //create threads
-    //join threads
-    //print threads
-  //NEXT FRAME
-
-
    cout << "running....\n";
-
-   try{
+   string request ="";
+ try{
       // Create the socket
       ServerSocket server_data(30000);
       ServerSocket server_ack(29999);
 
+      //run the server and open sockets to designated ports
+
       while (true){
+          //create sockets
 	       ServerSocket data_socket;
          ServerSocket ack_socket;
-
          arg.data_socket_ptr = &data_socket;
          arg.ack_socket_ptr = &ack_socket;
-
 
          //create the threads
           for(int thread = 0; thread < NTHREADS; thread++){
             //for each thread, server must accept a socket
             server_data.accept(data_socket);
             server_ack.accept(ack_socket);
+
+            data_socket << "What do you want to download?\n";
+            cout<<request;
+            data_socket>>request;
+
+            if(request == "testtext.txt")
+              arg.frames_ptr = &fileList[0];
+
+            else if(request == "LifeOfDogs.txt")
+              arg.frames_ptr = &fileList[1];
+
+
              //create a thread to sendData, using sockets and vector as arguments
              pthread_create( &thread_id[thread], NULL, &sendData ,arg_ptr);
+            cout<<"Creating thread "<<thread<<endl;
           }
            //join each thread
            for(int thread  = 0; thread < NTHREADS; thread ++){
              pthread_join( thread_id[thread],NULL);
+             cout<<"Joining therad "<<thread <<endl;
            }
 
          }//END WHILE TRUE
@@ -86,6 +95,7 @@ int main()
 //NOTE *arg ... to pass multiple arguments, pass a structure.
 //we need a pointer to a structure which contains frames as well as sockets
 void *sendData(void* arg_ptr){
+  printf("Thread number %ld\n", pthread_self());
   //convert pointer to Arguments type
   Arguments* arg_convert = (Arguments*)arg_ptr;
   //arg is dereferenced converted pointer (same as arg in main)
@@ -119,12 +129,16 @@ void *sendData(void* arg_ptr){
 }
 
 
-vector<string> framer()
+vector<string> framer(string fileName)
 {
+  char thing[fileName.size()];
+  for(int i = 0; i < fileName.size(); i++){
+    thing[i] = fileName[i];
+  }
    int i,j,pcounter=0;
    vector<string> temp;
    string ftemp;
-   ifstream file("testtext.txt");
+   ifstream file(thing);
    string input;
    while(!file.eof())
    {

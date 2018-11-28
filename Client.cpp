@@ -24,10 +24,22 @@ int main()
 
       // Usually in real applications, the following
       // will be put into a loop.
-      for(int i=0;i<1017;i++){
+      //TODO while NOT EOF
+      for(int i=0;i<10;i++){
          try {
+           if(i == 0){
           client_data_socket >> reply;
           cout<<reply<<endl;
+          string request;
+          cin>>request;
+          client_data_socket << request;
+          client_data_socket >> reply;
+          cout<<reply<<endl;
+        }
+          else{
+            client_data_socket >> reply;
+            cout<<reply<<endl;
+          }
           //get last char for parity check
 
           //sumof the chars of the message
