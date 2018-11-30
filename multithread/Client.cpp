@@ -39,11 +39,11 @@ int main()
           cin>>request;
           client_data_socket << request;
           client_data_socket >> reply;
-          cout<<reply<<endl;
+          //cout<<reply<<endl;
         }
           else{
             client_data_socket >> reply;
-            cout<<reply<<endl;
+            //cout<<reply<<endl;
           }
           if(reply == "__EOF__")
           {break;}
@@ -81,7 +81,7 @@ int main()
             }
           }
           else {
-            cout<<"Sending NAK\n";
+            cout<<"Sending NAK on "<<i<<"th frame received:"<<reply <<endl;
             client_ack_socket <<"NAK";
           }
         }

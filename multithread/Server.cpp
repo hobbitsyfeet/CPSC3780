@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 #include <pthread.h>
+#include<crand>
 using namespace std;
 
 
@@ -100,17 +101,25 @@ void *sendData(void* arg_ptr){
 
   try{
     //first communication to determine which file to download
-    data_socket << "What do you want to download?\n";
-    cout<<request;
-    data_socket>>request;
+    bool inputflag = true;
+    do{
+        //first communication to determine which file to download
+        data_socket << "What do you want to download?\n";
+        cout<<request;
+        data_socket>>request;
 
-    if(request == "testtext.txt")
-      frames = fileList[0];
+        if(request == "testtext.txt"){
+           frames = fileList[0];
+           inputflag = false;
+         }
 
-    else if(request == "LifeOfDogs.txt")
-      frames = fileList[1];
-    else
-      frames = fileList[1];
+        else if(request == "LifeOfDogs.txt"){
+           frames = fileList[1];
+           inputflag = false;
+         }
+
+
+    }while(inputflag);
    for(int i=0;i<frames.size();i++)
    {
       faker.push_back(frames[i]);
@@ -132,6 +141,7 @@ void *sendData(void* arg_ptr){
         }
         //update current frame, this is outside of the if statement above for the purpose of error spoofing
         str = frames[current_index];
+
         if(current_index%5==0&&flag==true){
          str=faker[current_index];
          flag=false;

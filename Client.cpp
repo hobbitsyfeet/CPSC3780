@@ -39,7 +39,7 @@ int main()
           cin>>request;
           client_data_socket << request;
           client_data_socket >> reply;
-          cout<<reply<<endl;
+          //cout<<reply<<endl;
         }
           else{
             client_data_socket >> reply;
@@ -59,6 +59,7 @@ int main()
             client_ack_socket << "ACK";
             //this is just formatting the lines
             if(reply==flagstr){
+
                j=(static_cast<int>(content.size())-1);
                while(flag)
                {
@@ -82,9 +83,10 @@ int main()
             }
           }
           else {
-            cout<<"Sending NAK\n";
+            cout<<"Sending NAK on "<<i<<"th frame received:"<<reply <<endl;
             client_ack_socket <<"NAK";
           }
+
         }
          catch(SocketException&){
          }

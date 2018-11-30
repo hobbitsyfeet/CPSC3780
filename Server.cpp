@@ -6,6 +6,10 @@
 #include <string>
 #include <vector>
 #include <pthread.h>
+#include <time.h>
+#include <stdlib.h>
+
+
 using namespace std;
 
 
@@ -15,16 +19,16 @@ vector<string> framer(string fileName);
 
 int main()
 {
+  srand(time(NULL));   // Initialization, should only be called once.
    //declare arguments
    vector<vector<string> > fileList;
-   bool flag=true;
    vector<string> faker;
    vector<string> frames;
-   string request ="";
+
 
    cout<<"Loading testtext...\n";
    fileList.push_back(framer("testtext.txt"));
-   cout<<"Loading LifeOfDogs...\n";
+   cout<<"Loading lod...\n";
    fileList.push_back(framer("LifeOfDogs.txt"));
 
   //display information loaded
@@ -44,24 +48,33 @@ int main()
 
       //run the server and open sockets to designated ports
       while (true){
+         string request ="";
          //create sockets
          ServerSocket data_socket;
          ServerSocket ack_socket;
          server_data.accept(data_socket);
          server_ack.accept(ack_socket);
          try{
-            //first communication to determine which file to download
-            data_socket << "What do you want to download?\n";
-            cout<<request;
-            data_socket>>request;
 
-            if(request == "testtext.txt")
-               frames = fileList[0];
+          //bool inputflag = true;
+          //do{
+              //first communication to determine which file to download
+              data_socket << "What do you want to download?\n";
 
-            else if(request == "LifeOfDogs.txt")
-               frames = fileList[1];
-            else
-               frames = fileList[1];
+              data_socket>>request;
+              cout<<"asking for: "<<request<<endl;
+              if(request == "test"){
+                 frames = fileList[0];
+                 //inputflag = false;
+               }
+
+              else if(request == "lod"){
+                 frames = fileList[1];
+                 //inputflag = false;
+               }
+
+
+          //}while(inputflag);
             for(int i=0;i<frames.size();i++)
             {
                faker.push_back(frames[i]);
@@ -71,26 +84,41 @@ int main()
             //--start to download files--
 
             //current_index is the index of the frame to send
-            int current_index = -1;
+            int current_index = 0;
+            int error_index = -1;
             //data string
             string str = "";
             //The ack from the cilent
-            string ack = "ACK";
+            string ack = "";
+            bool errorSent=false;
+
             while (true){
+               /*else if(ack == "NAK"){
+               //update current frame index
+                  errorSent = true;
+               }*/
+               //update current frame, this is outside of the if statement above for the purpose of error spoofing
+              str = frames[current_index];
+
+               if(current_index%5 == 0&&errorSent==false){
+                  error_index = rand()%5 + current_index;
+               }
+               if(error_index == current_index && errorSent==false){
+                 //str = "this is dumb";
+                  str=faker[current_index];
+                  errorSent = true;
+               }
+               else //if(error_index == current_index && errorSent){
+                 {errorSent=false;
+               }
+
+               data_socket << str;
+               ack_socket >> ack;
+               //std::cout<<ack<<endl;
                if(ack == "ACK"){
                //update current frame index
                   current_index++;
                }
-               //update current frame, this is outside of the if statement above for the purpose of error spoofing
-               str = frames[current_index];
-               if(current_index%5==0&&flag==true){
-                  str=faker[current_index];
-                  flag=false;
-               }
-               if(current_index%5==2){flag=true;}
-               data_socket << str;
-               // get ack
-               ack_socket >> ack;
             }//END WHILE
          }//END INNER TRY
          catch(SocketException&){}
