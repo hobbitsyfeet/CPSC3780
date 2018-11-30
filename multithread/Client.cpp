@@ -12,9 +12,10 @@ bool checkParity(string);
 
 int main()
 {
+   int j;
    vector<string> fullmsg;
    string content = "";
-   bool correctParity;
+   bool correctParity,flag=true;
    try{
       // Replace "localhost" with the hostname
       // that you're running your server.
@@ -58,6 +59,20 @@ int main()
             client_ack_socket << "ACK";
             //this is just formatting the lines
             if(reply==flagstr){
+               j=(static_cast<int>(content.size())-1);
+               while(flag)
+               {
+                  if(content[j]==' ')
+                  {
+                     j--;
+                  }
+                  else
+                  {
+                     flag=false;
+                     content=content.substr(0,j+1);
+                  }
+               }
+               flag=true;
                fullmsg.push_back(content);
                content="";
             }
@@ -83,7 +98,7 @@ int main()
    cout<<content;
    for(int j=0;j<fullmsg.size();j++)
    {
-      cout<<fullmsg[j]<<"\n\n";
+      cout<<fullmsg[j]<<" //Line Number: "<<j+1<<"\n\n";
    }
    return 0;
 }
