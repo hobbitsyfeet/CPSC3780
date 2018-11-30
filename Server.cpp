@@ -73,16 +73,14 @@ int main()
                  //inputflag = false;
                }
 
-
+               faker=frames;
           //}while(inputflag);
-            for(int i=0;i<frames.size();i++)
-            {
-               faker.push_back(frames[i]);
+            for(int i=0;i<faker.size();i++)
+            {           
                faker[i][3]++;
             }
 
             //--start to download files--
-
             //current_index is the index of the frame to send
             int current_index = 0;
             int error_index = -1;
@@ -92,7 +90,9 @@ int main()
             string ack = "";
             bool errorSent=false;
 
+
             while (true){
+
                /*else if(ack == "NAK"){
                //update current frame index
                   errorSent = true;
