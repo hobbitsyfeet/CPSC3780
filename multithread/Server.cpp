@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 #include <pthread.h>
-//#include <crand>
+#include <stdlib.h>
 using namespace std;
 
 
@@ -98,6 +98,8 @@ void *sendData(void* arg_ptr){
   ServerSocket ack_socket = *arg.ack_socket_ptr;
   vector<string> frames;
   string request ="";
+  bool errorSent=false;
+
 
   try{
     //first communication to determine which file to download
@@ -118,38 +120,44 @@ void *sendData(void* arg_ptr){
            inputflag = false;
          }
 
-
     }while(inputflag);
-   for(int i=0;i<frames.size();i++)
-   {
-      faker.push_back(frames[i]);
+    faker=frames;
+    //}while(inputflag);
+    for(int i=0;i<faker.size();i++)
+    {
       faker[i][3]++;
-   }
-
+    }
     //--start to download files--
 
     //current_index is the index of the frame to send
-    int current_index = -1;
+    int current_index = 0;
+    int error_index = -1;
     //data string
     string str = "";
     //The ack from the cilent
     string ack = "ACK";
     while (true){
-        if(ack == "ACK"){
-         //update current frame index
-         current_index++;
-        }
         //update current frame, this is outside of the if statement above for the purpose of error spoofing
         str = frames[current_index];
 
-        if(current_index%5==0&&flag==true){
-         str=faker[current_index];
-         flag=false;
+        if(current_index%5 == 0&&errorSent==false){
+           error_index = rand()%5 + current_index;
         }
-        if(current_index%5==2){flag=true;}
+        if(error_index == current_index && errorSent==false){
+          //str = "this is dumb";
+           str=faker[current_index];
+           errorSent = true;
+        }
+        else //if(error_index == current_index && errorSent){
+          {errorSent=false;
+        }
         data_socket << str;
         // get ack
         ack_socket >> ack;
+        if(ack == "ACK"){
+        //update current frame index
+           current_index++;
+        }
     }//END WHILE
   }//END OUTER MOST TRY
   catch(SocketException&){}
