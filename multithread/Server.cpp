@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 #include <pthread.h>
-#include<crand>
+//#include <crand>
 using namespace std;
 
 
@@ -108,12 +108,12 @@ void *sendData(void* arg_ptr){
         cout<<request;
         data_socket>>request;
 
-        if(request == "testtext.txt"){
+        if(request == "test"){
            frames = fileList[0];
            inputflag = false;
          }
 
-        else if(request == "LifeOfDogs.txt"){
+        else if(request == "lod"){
            frames = fileList[1];
            inputflag = false;
          }

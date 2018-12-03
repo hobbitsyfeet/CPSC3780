@@ -17,10 +17,12 @@ int main()
    string content = "";
    bool correctParity,flag=true;
    try{
+     cout<<"Which host would you like to connect to?: ";
+     cin >> hostname;
       // Replace "localhost" with the hostname
       // that you're running your server.
-      ClientSocket client_data_socket("localhost", 30000);
-      ClientSocket client_ack_socket("localhost",29999);
+      ClientSocket client_data_socket(hostname, 30000);
+      ClientSocket client_ack_socket(hostname,29999);
 
       string reply;
       string reply_ack;
